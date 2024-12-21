@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="h-full flex flex-col content-center items-center justify-center">
         <span className="text-2xl font-bold">수빈님</span>
-        <span className="text-2xl font-bold">오늘도 럭키비키잖아? </span>
+        <span className="text-2xl font-bold">완전 럭키비키잖아? </span>
         <Image
             className="dark:invert"
             src="/giphy.gif"
