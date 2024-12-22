@@ -24,8 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning={true}
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh`}
-        style={{background:'#CCFE00'}}
+        style={{ background: '#CCFE00' }}
       >
         {children}
       </body>
