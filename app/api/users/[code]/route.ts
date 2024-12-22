@@ -35,8 +35,9 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     throw new Error(err)
   }
 }
-export async function POST(req: NextRequest) {
-  const { birth, birthTime, name, code, gender } = await req.json()
+export async function POST(req: NextRequest, { params }: { params: Params }) {
+  const { birth, birthTime, name, gender } = await req.json()
+  const { code } = params
   const fortuneai = new Fortuneai()
   const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
   const fortuneTime = dayjs().format('YYYY-MM-DD')
@@ -49,8 +50,9 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ result: 'ok' })
 }
 
-export async function PUT(req: NextRequest) {
-  const { _id, birth, birthTime, name, code, gender } = await req.json()
+export async function PUT(req: NextRequest, { params }: { params: Params }) {
+  const { _id, birth, birthTime, name, gender } = await req.json()
+  const { code } = params
 
   await os.client.update({
     index: os.index,
