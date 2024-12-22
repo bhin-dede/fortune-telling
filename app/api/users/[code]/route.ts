@@ -3,7 +3,7 @@ import { os } from '@/lib/opensearch'
 import Fortuneai from '@/lib/fortuneai'
 import dayjs from 'dayjs'
 
-type Params = {
+export type Params = {
   code: string
 }
 export async function GET(req: NextRequest, { params }: { params: Params }) {

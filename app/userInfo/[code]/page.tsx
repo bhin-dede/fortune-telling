@@ -1,10 +1,13 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
-import { Input } from '@/components/ui/input'
+import React from 'react'
+import { type Params } from '@/app/api/users/[code]/route'
 
-export default function UserInfoPage() {
-  const router = useRouter()
+import { Input } from '@/components/ui/input'
+import { FooterComponent } from '@/components/footer'
+
+export default async function UserInfoPage({ params }: { params: Promise<Params> }) {
+  const { code } = await params
+  console.info(code)
+
   return (
     <div className="h-full flex flex-col content-center items-center justify-center">
       <span className="text-neutral-600">2024년 12월 22일</span>
@@ -15,9 +18,7 @@ export default function UserInfoPage() {
         <Input className="h-14 bg-white" placeholder="태어난시간" />
         <Input className="h-14 bg-white" placeholder="여성" />
       </div>
-      <Button onClick={() => router.push(`/result`)} className="px-20 h-14 text-base absolute bottom-10 w-5/6">
-        저장하기
-      </Button>
+      <FooterComponent />
     </div>
   )
 }
