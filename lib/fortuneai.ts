@@ -3,7 +3,7 @@ import OpenAI from 'openai'
 type tellParamsType = {
   birth: string
   birthTime: string
-  gendor: string
+  gender: string
   name: string
   userMessage: string
 }
@@ -20,7 +20,7 @@ class Fortuneai {
     })
   }
 
-  async tell({ birth, birthTime, gendor, name, userMessage }: tellParamsType) {
+  async tell({ birth, birthTime, gender, name, userMessage }: tellParamsType) {
     const todatDateTime = new Date().toLocaleDateString('ko-KR', {
       timeZone: 'Asia/Seoul',
     }) //한국의 서울을 시간을 기준으로 Date 생성
@@ -47,21 +47,19 @@ class Fortuneai {
         },
         {
           role: 'user',
-          content: `저의 이름은 ${name}이고 생년 월일은 ${birth}이고 성별은 ${gendor}이고 태어난 시간은 ${birthTime} 입니다. 현재 시각은 ${todatDateTime} 입니다. 이 정보를 참조해서 운세에 관해 답변해주세요`,
+          content: `저의 이름은 ${name}이고 생년 월일은 ${birth}이고 성별은 ${gender}이고 태어난 시간은 ${birthTime} 입니다. 현재 시각은 ${todatDateTime} 입니다. 이 정보를 참조해서 운세에 관해 답변해주세요`,
         },
         {
           role: 'assistant',
-          content: `당신의 이름은 ${name}, 생년월일은 ${birth}, 태어난 시간은 ${birthTime}, 성별은 ${gendor}, 현재 시간은 ${todatDateTime}인것을 확인했습니다.`,
+          content: `당신의 이름은 ${name}, 생년월일은 ${birth}, 태어난 시간은 ${birthTime}, 성별은 ${gender}, 현재 시간은 ${todatDateTime}인것을 확인했습니다.`,
         },
         { role: 'user', content: userMessage },
       ],
     })
-    console.log('입력 질문 :' + userMessage + '\n입력 날짜 :' + birth + '\n입력 별자리 :' + birthTime + '\n')
     const fortune = completion.choices[0].message['content']
-    console.log(fortune)
+
     return fortune
   }
 }
 
-const fortuneai = new Fortuneai()
-export { fortuneai }
+export default Fortuneai
