@@ -38,6 +38,14 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 export async function POST(req: NextRequest, { params }: { params: Params }) {
   const { birth, birthTime, name, gender } = await req.json()
   const { code } = params
+
+  const { body: { hits: { total: { value = 0 } = {} } = {} } = {} } = await os.client.search({
+    index: os.index,
+    body: { query: { bool: { filter: [{ term: { 'docType.keyword': 'user' } }, { term: { 'code.keyword': code } }] } } },
+  })
+
+  if (value) return NextResponse.json({ result: `이미 등록된 code(${code})입니다.`, status: 409 })
+
   const fortuneai = new Fortuneai()
   const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
   const fortuneTime = dayjs().format('YYYY-MM-DD')
@@ -53,11 +61,14 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
 export async function PUT(req: NextRequest, { params }: { params: Params }) {
   const { _id, birth, birthTime, name, gender } = await req.json()
   const { code } = params
+  const fortuneai = new Fortuneai()
+  const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+  const fortuneTime = dayjs().format('YYYY-MM-DD')
 
   await os.client.update({
     index: os.index,
     id: _id,
-    body: { doc: { name, birth, birthTime, code, gender } },
+    body: { doc: { name, birth, birthTime, code, gender, fortune, fortuneTime } },
   })
 
   return NextResponse.json({ result: 'ok' })
