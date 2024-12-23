@@ -9,7 +9,5 @@ export default async function UserInfoPage({ params }: { params: Promise<Params>
   const result = await res.json()
   console.info(result)
 
-  return (
-    <Form code={code} />
-  )
+  return <Form code={code} />
 }
