@@ -10,8 +10,8 @@ const Form = ({ code }: { code: string }) => {
 
   return (
     <div className="h-full flex flex-col content-center items-center justify-center">
-      <span className="text-neutral-600">2024년 12월 22일</span>
-      <span className="text-xl font-bold mb-5">오늘 마음 먹은 때라면 과감히 실행하세요.</span>
+      <span className="text-xl font-bold">정확한 운세를 위해 정보를 입력해주세요.</span>
+      <span className="text-neutral-600 mb-5">* 운세보기 외 정보를 사용하지 않습니다.</span>
       <div className="w-5/6 flex flex-col gap-2">
         <Input className="h-14 bg-white" placeholder="이름" onChange={e => handleInputChange({ e, key: 'name' })} />
         <Input className="h-14 bg-white" placeholder="19940101" onChange={e => handleInputChange({ e, key: 'birth' })} />
