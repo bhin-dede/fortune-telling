@@ -10,9 +10,9 @@ export function FooterComponent({ info }: FooterComponentProps) {
   const router = useRouter()
   const handleClickButton = async () => {
     const { code, ...user } = info
-    await fetch(`/api/users/${info.code}`, {
+    await fetch(`/api/users/${code}`, {
       method: 'POST',
-      body: JSON.stringify(user)
+      body: JSON.stringify(user),
     })
     router.push(`/result`)
   }

@@ -48,18 +48,16 @@ class OS {
         indexKey = indexies[0]
       }
     } catch (err: any) {
-      console.info('###########', { ...err })
       if (err instanceof errors.ConnectionError) {
         console.info('데이터베이스 연결을 실패하였습니다.')
         throw new Error('데이터베이스 연결을 실패하였습니다.')
       }
 
-      const { meta: { body: { meta: { connection } = {}, error: { type = '', reason = '' } = {} } = {} } = {} } = err
+      const { meta: { body: { error: { type = '', reason = '' } = {} } = {} } = {} } = err
 
       if (!['resource_already_exists_exception', 'index_not_found_exception', 'illegal_argument_exception'].includes(type)) throw err
 
       if (!/^Limit of total fields \[\d+\] has been exceeded$/.test(reason)) {
-        console.info('@@@@@@@@@@@여기오는거야?')
         await client.indices.create({
           index,
           wait_for_active_shards: 'all',
