@@ -3,7 +3,12 @@ import { atom } from 'jotai'
 export interface User {
   name?: string
   fortuneTime?: string
-  fortune?: string
+  fortune?: {
+    summary?: string
+    tell?: string
+    numbers?: string
+    colors?: string
+  }
   code?: string
 }
 
