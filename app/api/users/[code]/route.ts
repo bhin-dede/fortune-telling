@@ -9,29 +9,28 @@ export type Params = {
 export async function GET(req: NextRequest, { params }: { params: Promise<Params> }) {
   const { code } = await params
   try {
-    const { body: { hits: { hits = [] } = {} } = {} } = await os.client.search({
-      index: os.index,
-      body: { query: { bool: { filter: [{ term: { 'docType.keyword': 'user' } }, { term: { 'code.keyword': code } }] } } },
-    })
-    const { _id, _source } = hits?.[0] || {}
+    const { body: { _id, _source } = {} } = await os.client.get({ index: os.index, id: code })
+
     const user = { _id, ..._source }
-    if (user) {
-      const { _id: userEsId, birth, birthTime, name, gender, fortuneTime } = user
-      const prevDate = dayjs(fortuneTime)
-      const curDate = dayjs()
 
-      if (prevDate.isBefore(curDate, 'day')) {
-        const fortuneai = new Fortuneai()
-        const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+    const { _id: userEsId, birth, birthTime, name, gender, fortuneTime } = user
+    const prevDate = dayjs(fortuneTime)
+    const curDate = dayjs()
 
-        await os.client.update({ index: os.index, id: userEsId, body: { doc: { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') } } })
+    if (prevDate.isBefore(curDate, 'day')) {
+      const fortuneai = new Fortuneai()
+      const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
 
-        Object.assign(user, { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') })
-      }
+      await os.client.update({ index: os.index, id: userEsId, body: { doc: { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') } } })
+
+      Object.assign(user, { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') })
     }
 
     return NextResponse.json({ user })
   } catch (err: any) {
+    const { meta: { body: { found } = {} } = {} } = err
+    if (!found) return NextResponse.json({ user: null })
+
     throw new Error(err)
   }
 }
@@ -39,23 +38,30 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
   const { birth, birthTime, name, gender } = await req.json()
   const { code } = await params
 
-  const { body: { hits: { total: { value = 0 } = {} } = {} } = {} } = await os.client.search({
-    index: os.index,
-    body: { query: { bool: { filter: [{ term: { 'docType.keyword': 'user' } }, { term: { 'code.keyword': code } }] } } },
-  })
+  try {
+    const { body: { _id } = {} } = await os.client.get({ index: os.index, id: code })
 
-  if (value) return NextResponse.json({ result: `이미 등록된 code(${code})입니다.`, status: 409 })
+    if (_id) return NextResponse.json({ result: `이미 등록된 정보입니다.`, status: 409 })
+  } catch (err: any) {
+    const { meta: { body: { found } = {} } = {} } = err
+    if (!found) {
+      try {
+        const fortuneai = new Fortuneai()
+        const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+        const fortuneTime = dayjs().format('YYYY-MM-DD')
+        await os.client.index({
+          index: os.index,
+          id: code,
+          body: { docType: 'user', name, birth, birthTime, code, gender, fortune, fortuneTime },
+          refresh: true,
+        })
 
-  const fortuneai = new Fortuneai()
-  const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
-  const fortuneTime = dayjs().format('YYYY-MM-DD')
-  await os.client.index({
-    index: os.index,
-    body: { docType: 'user', name, birth, birthTime, code, gender, fortune, fortuneTime },
-    refresh: true,
-  })
-
-  return NextResponse.json({ result: 'ok', user: { name, birth, birthTime, code, gender, fortune, fortuneTime } })
+        return NextResponse.json({ result: 'ok', user: { _id: code, name, birth, birthTime, code, gender, fortune, fortuneTime } })
+      } catch (err: any) {
+        throw new Error(err)
+      }
+    }
+  }
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<Params> }) {
