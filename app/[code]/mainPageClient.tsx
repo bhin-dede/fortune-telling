@@ -26,8 +26,8 @@ export function MainPageClient({ code }: { code: string }) {
 
   return (
     <>
-      {user.name ? <span className="text-2xl font-bold">{user.name}님</span> : <span className="text-2xl font-bold">오늘 운세</span>}
-      <span className="text-2xl font-bold">완전 럭키비키잖아? </span>
+      <span className="text-2xl font-bold">오늘 운세</span>
+      <span className="text-2xl font-bold">완전 럭키{user.name}잖아? </span>
       <Image className="dark:invert" src="/giphy.gif" alt="giphy" width={300} height={300} />
       <Button
         onClick={() => (Object.keys(user).length ? router.push(`/result`) : router.push(`/userInfo/${code}`))}
