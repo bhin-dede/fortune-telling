@@ -1,17 +1,15 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-
-interface User {
-  name?: string
-}
+import { useAtom } from 'jotai'
+import { type User, responseUser } from '@/store/state'
 
 export function MainPageClient({ code }: { code: string }) {
   const router = useRouter()
-  const [user, setUser] = useState<User>({})
+  const [user, setUser] = useAtom<User>(responseUser)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +26,7 @@ export function MainPageClient({ code }: { code: string }) {
 
   return (
     <>
-      {user.name ? <span className="text-2xl font-bold">수빈님</span> : <span className="text-2xl font-bold">오늘 운세</span>}
+      {user.name ? <span className="text-2xl font-bold">{user.name}님</span> : <span className="text-2xl font-bold">오늘 운세</span>}
       <span className="text-2xl font-bold">완전 럭키비키잖아? </span>
       <Image className="dark:invert" src="/giphy.gif" alt="giphy" width={300} height={300} />
       <Button
