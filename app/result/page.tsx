@@ -15,8 +15,12 @@ export default function ResultPage() {
     <>
       <main className="h-full flex flex-col content-center items-center justify-center">
         <span className="text-neutral-600">{date}</span>
-        <span className="text-xl font-bold mb-5">오늘 마음 먹은 때라면 과감히 실행하세요.</span>
-        <p className="w-5/6">{user.fortune}</p>
+        <span className="text-xl font-bold mb-5 w-5/6">{user.fortune?.summary}</span>
+        <p className="w-5/6">{user.fortune?.tell}</p>
+        <div className="bg-white w-5/6 mt-5 rounded-md p-2">
+          <p className="font-bold text-lime-700">오늘의 색 : {user.fortune?.colors}</p>
+          <p className="font-bold text-lime-700">오늘의 숫자 : {user.fortune?.numbers}</p>
+        </div>
         <Button onClick={() => router.push(`/${user.code}`)} className="px-20 h-14 text-base absolute bottom-10 w-5/6">
           돌아가기
         </Button>
