@@ -6,8 +6,8 @@ import dayjs from 'dayjs'
 export type Params = {
   code: string
 }
-export async function GET(req: NextRequest, { params }: { params: Params }) {
-  const { code } = params
+export async function GET(req: NextRequest, { params }: { params: Promise<Params> }) {
+  const { code } = await params
   try {
     const { body: { hits: { hits = [] } = {} } = {} } = await os.client.search({
       index: os.index,
@@ -35,9 +35,9 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
     throw new Error(err)
   }
 }
-export async function POST(req: NextRequest, { params }: { params: Params }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<Params> }) {
   const { birth, birthTime, name, gender } = await req.json()
-  const { code } = params
+  const { code } = await params
 
   const { body: { hits: { total: { value = 0 } = {} } = {} } = {} } = await os.client.search({
     index: os.index,
@@ -58,9 +58,9 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   return NextResponse.json({ result: 'ok' })
 }
 
-export async function PUT(req: NextRequest, { params }: { params: Params }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<Params> }) {
   const { _id, birth, birthTime, name, gender } = await req.json()
-  const { code } = params
+  const { code } = await params
   const fortuneai = new Fortuneai()
   const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
   const fortuneTime = dayjs().format('YYYY-MM-DD')
