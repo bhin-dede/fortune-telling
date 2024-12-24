@@ -17,6 +17,7 @@ const eslintConfig = [
       'react-hooks/exhaustive-deps': 'off',
     },
   },
+  { ignores: ['dist/', 'build/', 'node_modules/', '.next/', 'scripts/', '*.min.js'] },
 ]
 
 export default eslintConfig
