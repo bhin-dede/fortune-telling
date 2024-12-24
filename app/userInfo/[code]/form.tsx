@@ -1,5 +1,5 @@
 'use client'
-import { FooterComponent } from '@/components/footer'
+import { FooterComponent } from '@/app/userInfo/[code]/footer'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 const Form = ({ code }: { code: string }) => {
