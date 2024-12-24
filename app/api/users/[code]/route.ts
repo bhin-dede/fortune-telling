@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
     refresh: true,
   })
 
-  return NextResponse.json({ result: 'ok' })
+  return NextResponse.json({ result: 'ok', user: { name, birth, birthTime, code, gender, fortune, fortuneTime } })
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<Params> }) {
