@@ -16,7 +16,7 @@ export function MainPageClient({ code }: { code: string }) {
       try {
         const res = await fetch(`/api/users/${code}`)
         const result = await res.json()
-        if (Object.keys(result.user)) return setUser(result.user)
+        if (Object.keys(result.user).length) return setUser(result.user)
       } catch (err) {
         console.info(err)
       }
