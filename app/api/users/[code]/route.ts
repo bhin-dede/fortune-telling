@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Params
 
     if (prevDate.isBefore(curDate, 'day')) {
       const fortuneai = new Fortuneai()
-      const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+      const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
 
       await os.client.update({ index: os.index, id: userEsId, body: { doc: { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') } } })
 
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
     if (!found) {
       try {
         const fortuneai = new Fortuneai()
-        const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+        const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
         const fortuneTime = dayjs().format('YYYY-MM-DD')
         await os.client.index({
           index: os.index,
@@ -68,7 +68,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   const { _id, birth, birthTime, name, gender } = await req.json()
   const { code } = await params
   const fortuneai = new Fortuneai()
-  const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 운세' })
+  const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
   const fortuneTime = dayjs().format('YYYY-MM-DD')
 
   await os.client.update({
