@@ -15,7 +15,9 @@ export default function ResultPage() {
     <>
       <main className="h-full flex flex-col content-center items-center justify-center">
         <span className="text-xl font-bold w-5/6 text-center">{user.name}의 오늘 운세</span>
-        <span className="text-neutral-600 mb-5">{date}</span>
+        <span className="text-neutral-600">{date}</span>
+        <span className="text-neutral-600 text-7xl mt-4 mb-10 font-bold">{user.fortune?.totalScore}</span>
+        {/* <span className="text-neutral-600 text-4xl mt-4 mb-10 font-bold">오늘 럭키 점수 : {user.fortune?.totalScore}점</span> */}
         <span className="text-md font-bold mb-5 w-5/6 text-center">🔮 {user.fortune?.summary}</span>
         <p className="w-5/6">{user.fortune?.tell}</p>
         <div className="bg-white w-5/6 mt-5 rounded-md p-2">
