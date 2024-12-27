@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Params
   }
 }
 export async function POST(req: NextRequest, { params }: { params: Promise<Params> }) {
-  const { birth, birthTime, name, gender } = await req.json()
+  const { birth, birthTime, name, nickname, gender } = await req.json()
   const { code } = await params
 
   try {
@@ -52,11 +52,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
         await os.client.index({
           index: os.index,
           id: code,
-          body: { docType: 'user', name, birth, birthTime, code, gender, fortune, fortuneTime },
+          body: { docType: 'user', name, nickname, birth, birthTime, code, gender, fortune, fortuneTime },
           refresh: true,
         })
 
-        return NextResponse.json({ result: 'ok', user: { _id: code, name, birth, birthTime, code, gender, fortune, fortuneTime } })
+        return NextResponse.json({ result: 'ok', user: { _id: code, name, nickname, birth, birthTime, code, gender, fortune, fortuneTime } })
       } catch (err: any) {
         throw new Error(err)
       }
@@ -65,17 +65,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<Params> }) {
-  const { _id, birth, birthTime, name, gender } = await req.json()
+  const { birth, birthTime, name, nickname, gender } = await req.json()
   const { code } = await params
-  const fortuneai = new Fortuneai()
-  const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
-  const fortuneTime = dayjs().format('YYYY-MM-DD')
+  // const fortuneai = new Fortuneai()
+  // const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
+  // const fortuneTime = dayjs().format('YYYY-MM-DD')
 
   await os.client.update({
     index: os.index,
-    id: _id,
-    body: { doc: { name, birth, birthTime, code, gender, fortune, fortuneTime } },
+    id: code,
+    body: { doc: { name, nickname, birth, birthTime, code, gender } },
   })
 
-  return NextResponse.json({ result: 'ok' })
+  return NextResponse.json({ result: 'ok', updated: { name, nickname, birth, birthTime, gender }, message: '운세정보는 다음날부터 갱신됩니다.' })
 }
