@@ -14,7 +14,7 @@ export interface User {
     studies?: string
     business?: string
     love?: string
-    totalScroe?: number
+    totalScore?: number
     wealthScore?: number
     healthScore?: number
     studiesScore?: number

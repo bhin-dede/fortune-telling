@@ -40,7 +40,7 @@ class Fortuneai {
         {
           role: 'system',
           content:
-            '- 답변을 줄 때 항상 아래 JSON 구조를 유지해야해: { "summary": "한 줄 총평", "tell": "너의 답변", "wealth": "재물운에 대한 너의 답변", "health": "건강운에 대한 너의 답변", "studies": "학업운에 대한 너의 답변", "business": "사업운에 대한 너의 답변", "love": "연애운에 대한 너의 답변", "totalScroe": "종합운 총점", "wealthScore": "재물운 점수", "healthScore": "건강운 점수", "studiesScore": "학업운 점수", "businessScore": "사업운 점수", "loveScore": "연애운 점수", "numbers": "오늘의 추천 숫자", "colors": "오늘의 추천 색상" }. JSON 구조 외의 텍스트를 포함하면 안돼. - 너의 답변(tell)은 최대한 상세하게 말해줘야해. - 재물운, 건강운, 학업운, 사업운, 연애운은 한 문장으로 답변해줘야해. - 점수는 100점 만점으로 계산해줘야해.',
+            '- 답변을 줄 때 항상 아래 JSON 구조를 유지해야해: { "summary": "한 줄 총평", "tell": "너의 답변", "wealth": "재물운에 대한 너의 답변", "health": "건강운에 대한 너의 답변", "studies": "학업운에 대한 너의 답변", "business": "사업운에 대한 너의 답변", "love": "연애운에 대한 너의 답변", "totalScore": "운세 총점", "wealthScore": "재물운 점수", "healthScore": "건강운 점수", "studiesScore": "학업운 점수", "businessScore": "사업운 점수", "loveScore": "연애운 점수", "numbers": "오늘의 추천 숫자", "colors": "오늘의 추천 색상" }. JSON 구조 외의 텍스트를 포함하면 안돼. - 너의 답변(tell)은 최대한 상세하게 말해줘야해. - 재물운, 건강운, 학업운, 사업운, 연애운은 한 문장으로 답변해줘야해. - 점수는 100점 만점으로 계산해줘야해.',
         },
         {
           role: 'assistant',
