@@ -3,6 +3,7 @@ const fs = require('fs')
 
 const rootPath = path.join(__dirname, '../')
 const distPath = path.join(rootPath, 'dist')
+const publicPath = path.join(rootPath, 'public')
 
 // package.production.json
 const {
@@ -17,3 +18,6 @@ fs.writeFileSync(path.join(distPath, 'package.json'), adjustedPackageJson)
 // next.config.mjs
 // const nextConfig = fs.readFileSync(path.join(rootPath, 'next.config.mjs'), 'utf8')
 // fs.writeFileSync(path.join(distPath, 'next.config.mjs'), nextConfig)
+
+// public
+fs.cpSync(publicPath, path.join(distPath, 'public'), { recursive: true })
