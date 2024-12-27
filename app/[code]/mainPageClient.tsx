@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
@@ -10,6 +10,12 @@ import { type User, responseUser } from '@/store/state'
 export function MainPageClient({ code }: { code: string }) {
   const router = useRouter()
   const [user, setUser] = useAtom<User>(responseUser)
+  const [src, setSrc] = useState('/giphy.gif')
+  const fallbackSrc = '/spongebob-84333.png'
+
+  const handleError = () => {
+    setSrc(fallbackSrc)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +34,7 @@ export function MainPageClient({ code }: { code: string }) {
     <>
       <span className="text-2xl font-bold">오늘 운세</span>
       <span className="text-2xl font-bold">완전 럭키{user.name}잖아? </span>
-      <Image className="dark:invert" src="/giphy.gif" alt="giphy" width={300} height={300} />
+      <Image className="dark:invert" src={src} onError={handleError} alt="giphy" width={300} height={300} />
       <Button
         onClick={() => (Object.keys(user).length ? router.push(`/result`) : router.push(`/userInfo/${code}`))}
         className="px-20 h-14 text-base absolute bottom-10 w-5/6"
