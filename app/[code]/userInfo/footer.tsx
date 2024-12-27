@@ -22,7 +22,7 @@ export function FooterComponent({ info }: FooterComponentProps) {
       const result = await res.json()
       if (Object.keys(result.user).length) setUser(result.user)
 
-      await router.push(`/result`)
+      await router.push(`/${code}/result`)
     } catch (err) {
       console.info(err)
     }

@@ -34,9 +34,9 @@ export function MainPageClient({ code }: { code: string }) {
     <>
       <span className="text-2xl font-bold">오늘 운세</span>
       <span className="text-2xl font-bold">완전 럭키{user.name}잖아? </span>
-      <Image className="dark:invert" src={src} onError={handleError} alt="giphy" width={300} height={300} />
+      <Image className="dark:invert" src={src} onError={handleError} alt="럭키운세" width={300} height={300} />
       <Button
-        onClick={() => (Object.keys(user).length ? router.push(`/result`) : router.push(`/userInfo/${code}`))}
+        onClick={() => (Object.keys(user).length ? router.push(`/${code}/result`) : router.push(`/${code}/userInfo`))}
         className="px-20 h-14 text-base absolute bottom-10 w-5/6"
       >
         오늘의 운세보기
