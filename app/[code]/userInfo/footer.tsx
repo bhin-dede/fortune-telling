@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useAtom } from 'jotai'
 import { type User, responseUser } from '@/store/state'
@@ -11,8 +11,10 @@ type FooterComponentProps = {
 export function FooterComponent({ info }: FooterComponentProps) {
   const router = useRouter()
   const [, setUser] = useAtom<User>(responseUser)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleClickButton = async () => {
+    setIsLoading(true)
     const { code, ...user } = info
     try {
       const res = await fetch(`/api/users/${code}`, {
@@ -26,10 +28,11 @@ export function FooterComponent({ info }: FooterComponentProps) {
     } catch (err) {
       console.info(err)
     }
+    setIsLoading(false)
   }
   return (
     <Button onClick={handleClickButton} className="px-20 h-14 text-base absolute bottom-10 w-5/6">
-      저장하기
+      {isLoading ? '잠시만 기다려주세요..' : '저장하기'}
     </Button>
   )
 }
