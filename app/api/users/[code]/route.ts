@@ -71,11 +71,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   // const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
   // const fortuneTime = dayjs().format('YYYY-MM-DD')
 
-  await os.client.update({
-    index: os.index,
-    id: code,
-    body: { doc: { name, nickname, birth, birthTime, code, gender } },
-  })
+  try {
+    await os.client.update({
+      index: os.index,
+      id: code,
+      body: { doc: { name, nickname, birth, birthTime, code, gender } },
+    })
 
-  return NextResponse.json({ result: 'ok', updated: { name, nickname, birth, birthTime, gender }, message: '운세정보는 다음날부터 갱신됩니다.' })
+    return NextResponse.json({ result: 'ok', updated: { name, nickname, birth, birthTime, gender }, message: '운세정보는 다음날부터 갱신됩니다.' })
+  } catch (err: any) {
+    throw new Error(err)
+  }
 }

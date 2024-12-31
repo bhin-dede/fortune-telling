@@ -2,15 +2,15 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { useAtom } from 'jotai'
-import { type User, responseUser } from '@/store/state'
+import { useSetAtom } from 'jotai'
+import { responseUser } from '@/store/state'
 
 type FooterComponentProps = {
   info: Record<string, any>
 }
 export function FooterComponent({ info }: FooterComponentProps) {
   const router = useRouter()
-  const [, setUser] = useAtom<User>(responseUser)
+  const setUser = useSetAtom(responseUser)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleClickButton = async () => {

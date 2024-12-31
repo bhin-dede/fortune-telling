@@ -3,6 +3,9 @@ import { atom } from 'jotai'
 export interface User {
   name?: string
   nickname?: string
+  birth?: string
+  birthTime?: string
+  gender?: string
   fortuneTime?: string
   fortune?: {
     summary?: string
@@ -24,4 +27,4 @@ export interface User {
   code?: string
 }
 
-export const responseUser = atom<User>({})
+export const responseUser = atom<User | null>(null)

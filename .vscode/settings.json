@@ -21,6 +21,9 @@
     "diffEditor.maxComputationTime": 0,
     "diffEditor.ignoreTrimWhitespace": false,
     "eslint.options": {
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
     }
   }
   

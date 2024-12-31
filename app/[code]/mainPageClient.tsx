@@ -6,10 +6,11 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { useAtom } from 'jotai'
 import { type User, responseUser } from '@/store/state'
+import { CircleUserRound } from 'lucide-react'
 
 export function MainPageClient({ code }: { code: string }) {
   const router = useRouter()
-  const [user, setUser] = useAtom<User>(responseUser)
+  const [user, setUser] = useAtom<User | null>(responseUser)
   const [src, setSrc] = useState('/giphy.gif')
   const fallbackSrc = '/spongebob-84333.png'
 
@@ -21,8 +22,9 @@ export function MainPageClient({ code }: { code: string }) {
     const fetchData = async () => {
       try {
         const res = await fetch(`/api/users/${code}`)
-        const result = await res.json()
-        if (Object.keys(result.user).length) return setUser(result.user)
+        const { user } = await res.json()
+
+        if (!!user) return setUser(user)
       } catch (err) {
         console.info(err)
       }
@@ -32,12 +34,17 @@ export function MainPageClient({ code }: { code: string }) {
 
   return (
     <>
-      <span className="text-2xl font-bold">오늘 운세</span>
-      <span className="text-2xl font-bold">완전 럭키{user.name}잖아? </span>
+      {user && <div className="w-5/6 flex justify-end pb-10">
+        <CircleUserRound className="cursor-pointer" onClick={() => router.push(`/${code}/userInfo`)} />
+      </div>}
+      <div className="flex flex-col items-center">
+        <span className="text-2xl font-bold">오늘 운세</span>
+        <span className="text-2xl font-bold">완전 럭키{user?.name}잖아? </span>
+      </div>
       <Image className="dark:invert" src={src} onError={handleError} alt="럭키운세" width={300} height={300} priority />
       <Button
-        onClick={() => (Object.keys(user).length ? router.push(`/${code}/result`) : router.push(`/${code}/userInfo`))}
-        className="px-20 h-14 text-base absolute bottom-10 w-5/6"
+        onClick={() => (!!user ? router.push(`/${code}/result`) : router.push(`/${code}/userInfo`))}
+        className="px-20 h-14 text-base w-5/6"
       >
         오늘의 운세보기
       </Button>
