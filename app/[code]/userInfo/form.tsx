@@ -185,9 +185,14 @@ const UserForm = ({ code }: { code: string }) => {
                 </FormItem>
               )}
             />
-            <Button disabled={loading} type="submit" className="px-20 h-14 text-base absolute bottom-10 w-5/6">
-              {loading ? '잠시만 기다려주세요..' : '저장하기'}
-            </Button>
+            <div className="flex w-full gap-2">
+              <Button disabled={loading} type="button" variant="outline" className="flex-1 h-14" onClick={() => router.push(`/${code}`)}>
+                취소
+              </Button>
+              <Button disabled={loading} type="submit" className="text-base flex-1 h-14">
+                {loading ? '잠시만 기다려주세요..' : '저장하기'}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
