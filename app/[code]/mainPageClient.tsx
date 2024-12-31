@@ -34,18 +34,17 @@ export function MainPageClient({ code }: { code: string }) {
 
   return (
     <>
-      {user && <div className="w-5/6 flex justify-end pb-10">
-        <CircleUserRound className="cursor-pointer" onClick={() => router.push(`/${code}/userInfo`)} />
-      </div>}
+      {user && (
+        <div className="w-5/6 flex justify-end pb-10">
+          <CircleUserRound className="cursor-pointer" onClick={() => router.push(`/${code}/userInfo`)} />
+        </div>
+      )}
       <div className="flex flex-col items-center">
         <span className="text-2xl font-bold">오늘 운세</span>
         <span className="text-2xl font-bold">완전 럭키{user?.name}잖아? </span>
       </div>
       <Image className="dark:invert" src={src} onError={handleError} alt="럭키운세" width={300} height={300} priority />
-      <Button
-        onClick={() => (!!user ? router.push(`/${code}/result`) : router.push(`/${code}/userInfo`))}
-        className="px-20 h-14 text-base w-5/6"
-      >
+      <Button onClick={() => (!!user ? router.push(`/${code}/result`) : router.push(`/${code}/userInfo`))} className="px-20 h-14 text-base w-5/6">
         오늘의 운세보기
       </Button>
     </>
