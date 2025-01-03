@@ -3,6 +3,9 @@ import { os } from '@/lib/opensearch'
 import Fortuneai from '@/lib/fortuneai'
 import dayjs from 'dayjs'
 
+import { UserSchema } from '@/lib/zod'
+import { ZodError } from 'zod'
+
 export type Params = {
   code: string
 }
@@ -13,18 +16,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Params
 
     const user = { _id, ..._source }
 
-    const { _id: userEsId, birth, birthTime, name, gender, fortuneTime } = user
-    const prevDate = dayjs(fortuneTime)
-    const curDate = dayjs()
+    // const { _id: userEsId, birth, birthTime, name, gender, fortuneTime } = user
+    // const prevDate = dayjs(fortuneTime)
+    // const curDate = dayjs()
 
-    if (prevDate.isBefore(curDate, 'day')) {
-      const fortuneai = new Fortuneai()
-      const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
+    // if (prevDate.isBefore(curDate, 'day')) {
+    //   const fortuneai = new Fortuneai()
+    //   const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
 
-      await os.client.update({ index: os.index, id: userEsId, body: { doc: { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') } } })
+    //   await os.client.update({ index: os.index, id: userEsId, body: { doc: { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') } } })
 
-      Object.assign(user, { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') })
-    }
+    //   Object.assign(user, { fortune, fortuneTime: dayjs(curDate).format('YYYY-MM-DD') })
+    // }
 
     return NextResponse.json({ user })
   } catch (err: any) {
@@ -39,10 +42,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
   const { code } = await params
 
   try {
+    UserSchema.parse({ birth, birthTime, name, nickname, gender })
     const { body: { _id } = {} } = await os.client.get({ index: os.index, id: code })
 
     if (_id) return NextResponse.json({ result: `이미 등록된 정보입니다.`, status: 409 })
   } catch (err: any) {
+    if (err instanceof ZodError) return NextResponse.json({ error: { message: 'Validation error', errors: err.errors } })
+
     const { meta: { body: { found } = {} } = {} } = err
     if (!found) {
       try {
@@ -72,6 +78,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   // const fortuneTime = dayjs().format('YYYY-MM-DD')
 
   try {
+    UserSchema.parse({ birth, birthTime, name, nickname, gender })
+
     await os.client.update({
       index: os.index,
       id: code,
@@ -80,6 +88,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
 
     return NextResponse.json({ result: 'ok', updated: { name, nickname, birth, birthTime, gender }, message: '운세정보는 다음날부터 갱신됩니다.' })
   } catch (err: any) {
+    if (err instanceof ZodError) return NextResponse.json({ error: { message: 'Validation error', errors: err.errors } })
+
     throw new Error(err)
   }
 }
