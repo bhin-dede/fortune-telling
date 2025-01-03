@@ -12,3 +12,9 @@ export const UserSchema = z.object({
 export const NFCSchema = z.object({
   code: z.string({ required_error: '필수 입력 사항입니다.' }).min(1, '필수 입력 사항입니다.'),
 })
+
+export const AdminSchema = z.object({
+  adminId: z.string({ required_error: '필수 입력 사항입니다.' }).min(1, '필수 입력 사항입니다.'),
+  adminPw: z.string({ required_error: '필수 입력 사항입니다.' }).min(1, '필수 입력 사항입니다.'),
+  nfcId: z.string({ required_error: '필수 입력 사항입니다.' }).min(1, '필수 입력 사항입니다.'),
+})
