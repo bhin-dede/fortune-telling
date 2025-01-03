@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
 export interface User {
+  _id?: string
   name?: string
   nickname?: string
   birth?: string
@@ -24,7 +25,7 @@ export interface User {
     businessScore?: number
     loveScore?: number
   }
-  code?: string
+  nfcId?: string
 }
 
 export const responseUser = atom<User | null>(null)

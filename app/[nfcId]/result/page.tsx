@@ -24,7 +24,7 @@ export default function ResultPage() {
           <div className="font-bold text-lime-700"> 오늘의 색 : {user?.fortune?.colors} </div>
           <p className="font-bold text-lime-700">오늘의 숫자 : {user?.fortune?.numbers}</p>
         </div>
-        <Button onClick={() => router.push(`/${user?.code}`)} className="px-20 h-14 text-base absolute bottom-10 w-5/6">
+        <Button onClick={() => router.push(`/${user?.nfcId}`)} className="px-20 h-14 text-base absolute bottom-10 w-5/6">
           돌아가기
         </Button>
       </main>

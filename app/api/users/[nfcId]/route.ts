@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Params
 
     if (!total) return NextResponse.json({ user: null })
 
-    const { _id, ..._source } = hits[0]
+    const { _id, _source } = hits[0]
 
     const user = { _id, ..._source }
 
@@ -58,26 +58,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
     })
 
     if (total) return NextResponse.json({ result: `이미 등록된 정보입니다.`, status: 409 })
+    else {
+      const fortuneai = new Fortuneai()
+      const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
+      const fortuneTime = dayjs().format('YYYY-MM-DD')
+      const { body: { _id: createdId } = {} } = await os.client.index({
+        index: os.index,
+        body: { docType: 'user', name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime },
+        refresh: true,
+      })
+
+      return NextResponse.json({ result: 'ok', user: { _id: createdId, name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime } })
+    }
   } catch (err: any) {
     if (err instanceof ZodError) return NextResponse.json({ error: { message: 'Validation error', errors: err.errors } })
 
-    const { meta: { body: { found } = {} } = {} } = err
-    if (!found) {
-      try {
-        const fortuneai = new Fortuneai()
-        const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
-        const fortuneTime = dayjs().format('YYYY-MM-DD')
-        const { body: { _id: createdId } = {} } = await os.client.index({
-          index: os.index,
-          body: { docType: 'user', name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime },
-          refresh: true,
-        })
-
-        return NextResponse.json({ result: 'ok', user: { _id: createdId, name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime } })
-      } catch (err: any) {
-        throw new Error(err)
-      }
-    }
+    throw new Error(err)
   }
 }
 

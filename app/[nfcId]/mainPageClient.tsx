@@ -21,6 +21,12 @@ export function MainPageClient({ nfcId }: { nfcId: string }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const nfcRes = await fetch(`/api/nfc/${nfcId}`)
+        await nfcRes.json()
+      } catch {
+        router.push(`/`)
+      }
+      try {
         const res = await fetch(`/api/users/${nfcId}`)
         const { user } = await res.json()
 

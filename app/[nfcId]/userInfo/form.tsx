@@ -17,7 +17,7 @@ const UserForm = ({ nfcId }: { nfcId: string }) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(UserSchema),
     mode: 'all',
-    defaultValues: { name: user?.name || '', birth: user?.birth || '', birthTime: user?.birthTime || '', gender: user?.gender || '' },
+    defaultValues: { _id: user?._id || '', name: user?.name || '', birth: user?.birth || '', birthTime: user?.birthTime || '', gender: user?.gender || '' },
   })
   const { handleSubmit } = form
   const [loading, setLoading] = useState(false)
@@ -110,11 +110,10 @@ const UserForm = ({ nfcId }: { nfcId: string }) => {
   } else {
     const onValid: SubmitHandler<UserFormData> = async formData => {
       setLoading(true)
-
       try {
         const res = await fetch(`/api/users/${nfcId}`, {
           method: 'PUT',
-          body: JSON.stringify(formData),
+          body: JSON.stringify({ ...formData, _id: user._id }),
         })
         const { updated } = await res.json()
         setUser({ ...user, ...updated })
