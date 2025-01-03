@@ -7,12 +7,21 @@ import { UserSchema } from '@/lib/zod'
 import { ZodError } from 'zod'
 
 export type Params = {
-  code: string
+  nfcId: string
 }
+
 export async function GET(req: NextRequest, { params }: { params: Promise<Params> }) {
-  const { code } = await params
+  const { nfcId } = await params
+
   try {
-    const { body: { _id, _source } = {} } = await os.client.get({ index: os.index, id: code })
+    const { body: { hits: { hits = [], total: { value: total = 0 } = {} } = {} } = {} } = await os.client.search({
+      index: os.index,
+      body: { query: { bool: { filter: [{ term: { 'docType.keyword': 'user' } }, { term: { 'nfcId.keyword': nfcId } }] } } },
+    })
+
+    if (!total) return NextResponse.json({ user: null })
+
+    const { _id, ..._source } = hits[0]
 
     const user = { _id, ..._source }
 
@@ -39,13 +48,16 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Params
 }
 export async function POST(req: NextRequest, { params }: { params: Promise<Params> }) {
   const { birth, birthTime, name, nickname, gender } = await req.json()
-  const { code } = await params
+  const { nfcId } = await params
 
   try {
     UserSchema.parse({ birth, birthTime, name, nickname, gender })
-    const { body: { _id } = {} } = await os.client.get({ index: os.index, id: code })
+    const { body: { count: total } = {} } = await os.client.count({
+      index: os.index,
+      body: { query: { bool: { filter: [{ term: { 'docType.keyword': 'user' } }, { term: { 'nfcId.keyword': nfcId } }] } } },
+    })
 
-    if (_id) return NextResponse.json({ result: `이미 등록된 정보입니다.`, status: 409 })
+    if (total) return NextResponse.json({ result: `이미 등록된 정보입니다.`, status: 409 })
   } catch (err: any) {
     if (err instanceof ZodError) return NextResponse.json({ error: { message: 'Validation error', errors: err.errors } })
 
@@ -55,14 +67,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
         const fortuneai = new Fortuneai()
         const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
         const fortuneTime = dayjs().format('YYYY-MM-DD')
-        await os.client.index({
+        const { body: { _id: createdId } = {} } = await os.client.index({
           index: os.index,
-          id: code,
-          body: { docType: 'user', name, nickname, birth, birthTime, code, gender, fortune, fortuneTime },
+          body: { docType: 'user', name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime },
           refresh: true,
         })
 
-        return NextResponse.json({ result: 'ok', user: { _id: code, name, nickname, birth, birthTime, code, gender, fortune, fortuneTime } })
+        return NextResponse.json({ result: 'ok', user: { _id: createdId, name, nickname, birth, birthTime, nfcId, gender, fortune, fortuneTime } })
       } catch (err: any) {
         throw new Error(err)
       }
@@ -71,8 +82,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Param
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<Params> }) {
-  const { birth, birthTime, name, nickname, gender } = await req.json()
-  const { code } = await params
+  const { birth, birthTime, name, nickname, gender, _id } = await req.json()
+  const { nfcId } = await params
   // const fortuneai = new Fortuneai()
   // const fortune = await fortuneai.tell({ birth, birthTime, name, gender, userMessage: '오늘의 종합 운세' })
   // const fortuneTime = dayjs().format('YYYY-MM-DD')
@@ -82,8 +93,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
 
     await os.client.update({
       index: os.index,
-      id: code,
-      body: { doc: { name, nickname, birth, birthTime, code, gender } },
+      id: _id,
+      body: { doc: { name, nickname, birth, birthTime, nfcId, gender } },
     })
 
     return NextResponse.json({ result: 'ok', updated: { name, nickname, birth, birthTime, gender }, message: '운세정보는 다음날부터 갱신됩니다.' })

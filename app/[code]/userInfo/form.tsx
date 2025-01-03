@@ -12,7 +12,7 @@ import { responseUser } from '@/store/state'
 import { useRouter } from 'next/navigation'
 
 export type UserFormData = z.infer<typeof UserSchema>
-const UserForm = ({ code }: { code: string }) => {
+const UserForm = ({ nfcId }: { nfcId: string }) => {
   const [user, setUser] = useAtom(responseUser)
   const form = useForm<UserFormData>({
     resolver: zodResolver(UserSchema),
@@ -28,7 +28,7 @@ const UserForm = ({ code }: { code: string }) => {
       setLoading(true)
 
       try {
-        const res = await fetch(`/api/users/${code}`, {
+        const res = await fetch(`/api/users/${nfcId}`, {
           method: 'POST',
           body: JSON.stringify(formData),
         })
@@ -36,7 +36,7 @@ const UserForm = ({ code }: { code: string }) => {
         if (Object.keys(result.user).length) setUser(result.user)
 
         setLoading(false)
-        return router.push(`/${code}/result`)
+        return router.push(`/${nfcId}/result`)
       } catch (err) {
         console.info(err)
       }
@@ -112,7 +112,7 @@ const UserForm = ({ code }: { code: string }) => {
       setLoading(true)
 
       try {
-        const res = await fetch(`/api/users/${code}`, {
+        const res = await fetch(`/api/users/${nfcId}`, {
           method: 'PUT',
           body: JSON.stringify(formData),
         })
@@ -120,7 +120,7 @@ const UserForm = ({ code }: { code: string }) => {
         setUser({ ...user, ...updated })
 
         setLoading(false)
-        return router.push(`/${code}`)
+        return router.push(`/${nfcId}`)
       } catch (err) {
         console.info(err)
       }
@@ -186,7 +186,7 @@ const UserForm = ({ code }: { code: string }) => {
               )}
             />
             <div className="flex w-full gap-2">
-              <Button disabled={loading} type="button" variant="outline" className="flex-1 h-14" onClick={() => router.push(`/${code}`)}>
+              <Button disabled={loading} type="button" variant="outline" className="flex-1 h-14" onClick={() => router.push(`/${nfcId}`)}>
                 취소
               </Button>
               <Button disabled={loading} type="submit" className="text-base flex-1 h-14">

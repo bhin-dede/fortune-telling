@@ -1,13 +1,13 @@
-import { type Params } from '@/app/api/users/[code]/route'
+import { type Params } from '@/app/api/users/[nfcId]/route'
 
 import { MainPageClient } from './mainPageClient'
 
 export default async function Home({ params }: { params: Promise<Params> }) {
-  const { code } = await params
+  const { nfcId } = await params
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center">
-      <MainPageClient code={code} />
+      <MainPageClient nfcId={nfcId} />
     </div>
   )
 }
